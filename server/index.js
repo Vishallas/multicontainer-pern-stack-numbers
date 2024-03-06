@@ -22,7 +22,12 @@ const pgClient = new Pool({
 pgClient.on("connect", client => {
   client
     .query("CREATE TABLE IF NOT EXISTS values (number INT)")
-    .catch(err => console.log("PG ERROR", err));
+    .then(res => {
+      console.log("Connected to the database successfully.");
+    })
+    .catch(err => {
+      console.log("PG ERROR", err);
+    });
 });
 
 //Express route definitions
@@ -32,9 +37,14 @@ app.get("/", (req, res) => {
 
 // get the values
 app.get("/values/all", async (req, res) => {
-  const values = await pgClient.query("SELECT * FROM values");
-
-  res.send(values);
+  try {
+    const values = await pgClient.query("SELECT * FROM values");
+    console.log("Data received successfully", values.rows);
+    res.send(values);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // now the post -> insert value

@@ -1,0 +1,2 @@
+FROM nginx
+COPY ./ecs_deploy.conf /etc/nginx/conf.d/default.conf
