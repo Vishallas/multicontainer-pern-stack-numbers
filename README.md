@@ -21,4 +21,3 @@ The development mode has React app directly accessed by the main nginx server.
 The production mode has the seperate nginx server for frontend where the build contents of the react app where used.
 
 ![multicontainer_r2np_architecture_prod_drawio](https://github.com/Vishallas/multicontainer-pern-stack-numbers/assets/103063354/833dbdc2-f6ba-486d-bef4-039df955d31f)
-hello
