@@ -25,7 +25,7 @@ jobs:
       run: |
         ls
         TAG=$(date +%s)
-        docker build --file Dockerfile.ecs.dev --tag ${{ secrets.DOCKER_USERNAME }}/nginx:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/nginx:latest ./nginx
+        docker build --file nginx/Dockerfile.ecs.dev --tag ${{ secrets.DOCKER_USERNAME }}/nginx:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/nginx:latest ./nginx
         docker push ${{ secrets.DOCKER_USERNAME }}/nginx:$TAG
         docker push ${{ secrets.DOCKER_USERNAME }}/nginx:latest
 
