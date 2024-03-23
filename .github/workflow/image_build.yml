@@ -1,0 +1,45 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  ngnix-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Docker Login
+      uses: docker/login-action@v3.1.0
+      with:
+        username: ${{ DOCKER_USERNAME }}
+        password: ${{ DOCKER_PASSWORD }}
+        
+    - name: Clonning repo
+      uses: actions/checkout@v3
+    
+    - name: Build and push the nginx image
+      run: |
+        tag = $(data +%s)
+        docker build ./nginx --file Dockerfile.ecs.dev --tag ${{ DOCKER_USERNAME }}/nginx:$tag --tag ${{ DOCKER_USERNAME }}/nginx:latest
+        docker push ${{ DOCKER_USERNAME }}/nginx:$tag
+        docker push ${{ DOCKER_USERNAME }}/nginx:latest
+
+    - 
+      name: Build the server image
+      run: |
+        tag = $(data +%s)
+        docker build ./server --tag ${{ DOCKER_USERNAME }}/server:$tag --tag ${{ DOCKER_USERNAME }}/server:latest
+        docker push ${{ DOCKER_USERNAME }}/server:$tag
+        docker push ${{ DOCKER_USERNAME }}/server:latest
+
+    - name: Build the frontend image
+      run: |
+        tag = $(data +%s)
+        docker build ./client --tag ${{ DOCKER_USERNAME }}/frontend:$tag --tag ${{ DOCKER_USERNAME }}/frontend:latest
+        docker push ${{ DOCKER_USERNAME }}/frontend:$tag
+        docker push ${{ DOCKER_USERNAME }}/frontend:latest 
+    
