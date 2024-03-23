@@ -23,6 +23,7 @@ jobs:
     
     - name: Build and push the nginx image
       run: |
+        ls
         TAG=$(date +%s)
         docker build ./nginx --file Dockerfile.ecs.dev --tag ${{ secrets.DOCKER_USERNAME }}/nginx:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/nginx:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/nginx:$TAG
