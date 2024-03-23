@@ -24,7 +24,7 @@ jobs:
     - name: Build and push the nginx image
       run: |
         TAG=$(date +%s)
-        docker build ./nginx --file Dockerfile.ecs.dev --TAG ${{ secrets.DOCKER_USERNAME }}/nginx:$TAG --TAG ${{ secrets.DOCKER_USERNAME }}/nginx:latest
+        docker build ./nginx --file Dockerfile.ecs.dev --tag ${{ secrets.DOCKER_USERNAME }}/nginx:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/nginx:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/nginx:$TAG
         docker push ${{ secrets.DOCKER_USERNAME }}/nginx:latest
 
@@ -32,14 +32,14 @@ jobs:
       name: Build the server image
       run: |
         TAG=$(date +%s)
-        docker build ./server --TAG ${{ secrets.DOCKER_USERNAME }}/server:$TAG --TAG ${{ secrets.DOCKER_USERNAME }}/server:latest
+        docker build ./server --tag ${{ secrets.DOCKER_USERNAME }}/server:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/server:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/server:$TAG
         docker push ${{ secrets.DOCKER_USERNAME }}/server:latest
 
     - name: Build the frontend image
       run: |
         TAG=$(date +%s)
-        docker build ./client --TAG ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG --TAG ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+        docker build ./client --tag ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/frontend:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG
         docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest 
     
