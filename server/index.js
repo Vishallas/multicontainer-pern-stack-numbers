@@ -32,7 +32,7 @@ pgClient.on("connect", client => {
 
 //Express route definitions
 app.get("/", (req, res) => {
-  res.send("Hi");
+  res.send("Hello");
 });
 
 // get the values
