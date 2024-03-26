@@ -56,8 +56,6 @@ jobs:
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: <desired_version>
 
       - name: Initialize Terraform
         run: terraform -chdir=Iac/ecs init
