@@ -9,7 +9,6 @@ on:
 jobs:
   
   Build-images:
-    if: "!contains(github.event.commits.*.added, '.tf')"
     runs-on: ubuntu-latest
     
     steps:
@@ -26,27 +25,26 @@ jobs:
       run: |
         ls
         TAG=$(date +%s)
-        docker build --file nginx/Dockerfile.ecs.dev --tag ${{ secrets.DOCKER_USERNAME }}/nginx:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/nginx:latest ./nginx
-        docker push ${{ secrets.DOCKER_USERNAME }}/nginx:$TAG
-        docker push ${{ secrets.DOCKER_USERNAME }}/nginx:latest
+        docker build --file nginx/Dockerfile.ecs.dev --tag ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-lb:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-lb:latest ./nginx
+        docker push ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-lb:$TAG
+        docker push ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-lb:latest
 
     - 
       name: Build the server image
       run: |
         TAG=$(date +%s)
-        docker build --tag ${{ secrets.DOCKER_USERNAME }}/server:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/server:latest ./server 
-        docker push ${{ secrets.DOCKER_USERNAME }}/server:$TAG
-        docker push ${{ secrets.DOCKER_USERNAME }}/server:latest
+        docker build --tag ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-server:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-server:latest ./server 
+        docker push ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-server:$TAG
+        docker push ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-server:latest
 
     - name: Build the frontend image
       run: |
         TAG=$(date +%s)
-        docker build --tag ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./client 
-        docker push ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG
-        docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+        docker build --tag ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-client:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-client:latest ./client 
+        docker push ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-client:$TAG
+        docker push ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-client:latest
 
   terraforming:
-    if: "contains(toJSON(github.event.commits.*.added), '.tf')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -59,7 +57,7 @@ jobs:
 
       - name: moving to terraform code
         run: cd ./Iac/ecs
-        
+
       - name: Initialize Terraform
         run: terraform init
 
