@@ -49,6 +49,7 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/multicontainer-r2np-client:latest
 
   terraforming:
+    needs: Build-images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
