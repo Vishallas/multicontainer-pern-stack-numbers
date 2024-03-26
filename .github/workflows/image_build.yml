@@ -7,8 +7,9 @@ on:
     branches: [ "main" ]
 
 jobs:
-
-  ngnix-build:
+  
+  Build-images:
+    if: !contains(toJSON(github.event.commits.*.added), '.tf')
     runs-on: ubuntu-latest
     
     steps:
@@ -42,5 +43,27 @@ jobs:
         TAG=$(date +%s)
         docker build --tag ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./client 
         docker push ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG
-        docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest 
-    
+        docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+        
+  terraforming:
+    if: "contains(toJSON(github.event.commits.*.added), '.tf')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2 
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: <desired_version>
+
+      - name: Initialize Terraform
+        run: cd ./Iac/ecs
+        run: terraform init
+
+      - name: Validate Terraform configuration
+        run: terraform validate
+
+      - name: Applying changes to infrastructure
+        run: terraform apply --auto-approve
+      

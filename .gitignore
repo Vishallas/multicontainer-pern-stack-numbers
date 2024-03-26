@@ -30,3 +30,8 @@ yarn-debug.log*
 yarn-error.log*
 
 *.png
+
+*.terraform*
+locals.tf
+Iac/backend-s3/
+*tfstate*

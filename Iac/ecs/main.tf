@@ -2,6 +2,10 @@ provider "aws" {
   region = "us-east-1"
 }
 
+locals {
+  multiconainter-log-group = "/ecs/multicontainer-log-group-terraform"
+}
+
 resource "aws_ecs_cluster" "multi" {
   name = "multicontainer-cluster-terraform"
 
@@ -18,7 +22,6 @@ resource "aws_ecs_task_definition" "multi" {
     {
       name         = "client"
       image        = "flickerflak/multicontainer-r2np-client"
-      cpu          = 0
       portMappings = []
       essential    = true
       environment = [
@@ -32,8 +35,7 @@ resource "aws_ecs_task_definition" "multi" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-create-group  = "true"
-          awslogs-group         = "/ecs/multicontainer-pern-number"
+          awslogs-group         = "${local.multiconainter-log-group}"
           awslogs-region        = "us-east-1"
           awslogs-stream-prefix = "ecs"
         }
@@ -43,7 +45,6 @@ resource "aws_ecs_task_definition" "multi" {
     {
       name         = "api"
       image        = "flickerflak/multicontainer-r2np-server"
-      cpu          = 0
       portMappings = []
       essential    = true
       environment = [
@@ -79,8 +80,7 @@ resource "aws_ecs_task_definition" "multi" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-create-group  = "true"
-          awslogs-group         = "/ecs/multicontainer-pern-number"
+          awslogs-group         = "${local.multiconainter-log-group}"
           awslogs-region        = "us-east-1"
           awslogs-stream-prefix = "ecs"
         }
@@ -107,8 +107,7 @@ resource "aws_ecs_task_definition" "multi" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-create-group  = "true"
-          awslogs-group         = "/ecs/multicontainer-pern-number"
+          awslogs-group         = "${local.multiconainter-log-group}"
           awslogs-region        = "us-east-1"
           awslogs-stream-prefix = "ecs"
         }
@@ -118,7 +117,6 @@ resource "aws_ecs_task_definition" "multi" {
     {
       name         = "postgresdb"
       image        = "postgres:latest"
-      cpu          = 0
       portMappings = []
       essential    = false
       environment = [
@@ -132,8 +130,7 @@ resource "aws_ecs_task_definition" "multi" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-create-group  = "true"
-          awslogs-group         = "/ecs/multicontainer-pern-number"
+          awslogs-group         = "${local.multiconainter-log-group}"
           awslogs-region        = "us-east-1"
           awslogs-stream-prefix = "ecs"
         }
@@ -156,10 +153,17 @@ resource "aws_ecs_task_definition" "multi" {
 }
 
 resource "aws_ecs_service" "multi" {
-    name = "multicontainer-service-terraform"
-    cluster = aws_ecs_cluster.multi.id
-    task_definition = aws_ecs_task_definition.multi.arn
-    desired_count = 1
-    launch_type = "FARGATE"
-    
+  name            = "multicontainer-service-terraform"
+  cluster         = aws_ecs_cluster.multi.id
+  task_definition = aws_ecs_task_definition.multi.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+  network_configuration {
+    subnets          = ["subnet-0002ccca494bd293c", "subnet-0508aabc429731378", "subnet-077ff709329e7371f"]
+    assign_public_ip = true
+  }
+}
+
+resource "aws_cloudwatch_log_group" "multicontainer-log-group" {
+  name = "${local.multiconainter-log-group}"
 }
