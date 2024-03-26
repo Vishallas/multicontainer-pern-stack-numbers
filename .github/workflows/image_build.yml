@@ -59,15 +59,12 @@ jobs:
         with:
           terraform_version: <desired_version>
 
-      - name: moving to terraform code
-        run: cd ./Iac/ecs
-
       - name: Initialize Terraform
-        run: terraform init
-
+        run: terraform -chdir=Iac/ecs init
+        
       - name: Validate Terraform configuration
-        run: terraform validate
+        run: terraform -chdir=Iac/ecs validate
 
       - name: Applying changes to infrastructure
-        run: terraform apply --auto-approve
+        run: terraform -chdir=Iac/ecs apply --auto-approve
       
