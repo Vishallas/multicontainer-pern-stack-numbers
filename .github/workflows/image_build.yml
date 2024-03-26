@@ -9,7 +9,7 @@ on:
 jobs:
   
   Build-images:
-    if: !contains(toJSON(github.event.commits.*.added), '.tf')
+    if: "!contains(github.event.commits.*.added, '.tf')"
     runs-on: ubuntu-latest
     
     steps:
@@ -44,7 +44,7 @@ jobs:
         docker build --tag ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG --tag ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./client 
         docker push ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG
         docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
-        
+
   terraforming:
     if: "contains(toJSON(github.event.commits.*.added), '.tf')"
     runs-on: ubuntu-latest
@@ -57,8 +57,10 @@ jobs:
         with:
           terraform_version: <desired_version>
 
-      - name: Initialize Terraform
+      - name: moving to terraform code
         run: cd ./Iac/ecs
+        
+      - name: Initialize Terraform
         run: terraform init
 
       - name: Validate Terraform configuration
